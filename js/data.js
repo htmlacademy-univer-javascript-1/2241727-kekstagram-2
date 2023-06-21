@@ -42,7 +42,7 @@ const generateUrl = createRandomIdFromRangeGenerator(0, PICTURES_MAX_RANGE);
 const generateCommentId = createRandomIdFromRangeGenerator(1, 1000);
 
 
-const getCommentsData = function () {
+const getCommentData = function () {
   return  {
     id: generateCommentId (),
     avatar: getRandomPositiveNumber(1 ,6),
@@ -52,8 +52,8 @@ const getCommentsData = function () {
 };
 
 
-const getPicturesData = function () {
-  const comments = Array.from({length: getRandomPositiveNumber(1,COMMENTS_MAX_RANGE)}, getCommentsData);
+const getPictureData = function () {
+  const comments = Array.from({length: getRandomPositiveNumber(1,COMMENTS_MAX_RANGE)}, getCommentData);
   return {
     id: generatePhotoId(),
     url: generateUrl(),
@@ -63,5 +63,5 @@ const getPicturesData = function () {
   };
 };
 
-const similarPictures = Array.from({length: PICTURES_MAX_RANGE}, getPicturesData);
-export {similarPictures};
+const CreatePictures = () => Array.from({length: PICTURES_MAX_RANGE}, getPictureData);
+export {CreatePictures};
