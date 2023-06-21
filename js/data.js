@@ -1,11 +1,10 @@
-import {getRandomPositiveNumber, getArrayOfUniqueNumbers} from './util.js';
+import {getRandomPositiveNumber, createRandomIdFromRangeGenerator, getRandomArrayElement} from './util.js';
 
 const PICTURES_MAX_RANGE = 25;
 
 const LIKES_MIN_RANGE = 15;
 const LIKES_MAX_RANGE = 200;
 
-const COMMENTS_MIN_RANGE = 1;
 const COMMENTS_MAX_RANGE = 6;
 
 const DESCRIPTIONS = [
@@ -38,45 +37,31 @@ const NAMES = [
   'Ульяна',
 ];
 
-const getCommentsData = function (number) {
-  const comments = [];
-  const getIdComment = getArrayOfUniqueNumbers(200);
+const generatePhotoId = createRandomIdFromRangeGenerator(0, PICTURES_MAX_RANGE);
+const generateUrl = createRandomIdFromRangeGenerator(0, PICTURES_MAX_RANGE);
+const generateCommentId = createRandomIdFromRangeGenerator(1, 1000);
 
-  for (let i = 0; i <= number; i++) {
-    const message = MESSAGES[getRandomPositiveNumber(0, MESSAGES.length - 1)];
-    const comment = {
-      id: getIdComment[i],
-      avatar: `img/avatar-${  getRandomPositiveNumber(COMMENTS_MIN_RANGE, COMMENTS_MAX_RANGE)  }.svg`,
-      message: message,
-      name: NAMES[getRandomPositiveNumber(0, NAMES.length - 1)]
-    };
 
-    comments.push(comment);
-  }
-
-  return comments;
+const getCommentData = function () {
+  return  {
+    id: generateCommentId (),
+    avatar: getRandomPositiveNumber(1 ,6),
+    message: getRandomArrayElement(MESSAGES),
+    name: getRandomArrayElement(NAMES)
+  };
 };
 
-const getPicturesData = function (number) {
-  const arrayOfUniqueNumbers = getArrayOfUniqueNumbers(number);
-  const pictures = [];
 
-  for (let i = 0; i < number; i++) {
-    const description = DESCRIPTIONS[getRandomPositiveNumber(0, DESCRIPTIONS.length-1)];
-    const picture = {
-      id: arrayOfUniqueNumbers[i],
-      url: `photos/${  arrayOfUniqueNumbers[i]  }.jpg`,
-      description: description,
-      likes: getRandomPositiveNumber(LIKES_MIN_RANGE, LIKES_MAX_RANGE),
-      comments: getCommentsData(getRandomPositiveNumber(COMMENTS_MIN_RANGE, COMMENTS_MAX_RANGE))
-    };
-
-    pictures.push(picture);
-  }
-
-  return pictures;
+const getPictureData = function () {
+  const comments = Array.from({length: getRandomPositiveNumber(1,COMMENTS_MAX_RANGE)}, getCommentData);
+  return {
+    id: generatePhotoId(),
+    url: generateUrl(),
+    description: getRandomArrayElement(DESCRIPTIONS),
+    likes: getRandomPositiveNumber(LIKES_MIN_RANGE, LIKES_MAX_RANGE),
+    comments: comments,
+  };
 };
 
-const similarPictures = getPicturesData(PICTURES_MAX_RANGE);
-
-similarPictures();
+const CreatePictures = () => Array.from({length: PICTURES_MAX_RANGE}, getPictureData);
+export {CreatePictures};
