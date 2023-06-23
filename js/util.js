@@ -31,4 +31,24 @@ function checkStringLength (string, length) {
 
 checkStringLength(30, 50);
 
-export {getRandomPositiveNumber, createRandomIdFromRangeGenerator, getRandomArrayElement, checkStringLength};
+function getCloseListers(modal, closeButton, callback){
+  const closeOnEscape = (ev) => document.body.classList.toString().split(' ')
+    .filter((p) => p.startsWith('modal-prioritise'))
+    .map((p) => +p.slice(17))
+    .filter((p) => p > 1).length === 0 &&
+    ev.key === 'Escape' && closeModal();
+  function closeModal(){
+    if (callback){
+      callback();
+    }
+    modal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    document.body.classList.remove('modal-prioritise-1');
+    document.removeEventListener('keydown', closeOnEscape);
+    closeButton.removeEventListener('click', closeModal);
+  }
+  return [closeModal, closeOnEscape];
+}
+
+
+export {getRandomPositiveNumber, createRandomIdFromRangeGenerator, getRandomArrayElement, checkStringLength, getCloseListers};
