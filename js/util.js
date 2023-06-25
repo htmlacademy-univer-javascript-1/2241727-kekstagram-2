@@ -29,7 +29,6 @@ function checkStringLength (string, length) {
   return string.length <= length;
 }
 
-checkStringLength(30, 50);
 
 function getCloseListers(modal, closeButton, callback){
   const closeOnEscape = (ev) => document.body.classList.toString().split(' ')
@@ -50,5 +49,48 @@ function getCloseListers(modal, closeButton, callback){
   return [closeModal, closeOnEscape];
 }
 
+export function useOnEscape(elem, callback, prioritise) {
 
-export {getRandomPositiveNumber, createRandomIdFromRangeGenerator, getRandomArrayElement, checkStringLength, getCloseListers};
+  const action = (ev) => document.body.classList.toString().split(' ')
+    .filter((p) => p.startsWith('modal-prioritise'))
+    .map((p) => +p.slice(17))
+    .filter((p) => p > prioritise).length === 0 &&
+    ev.key === 'Escape' &&
+    callback();
+  const setEvent = () => {
+    document.addEventListener('keydown', action);
+    document.body.classList.add(`modal-prioritise-${prioritise}`);
+  };
+  const removeEvent = () => {
+    document.removeEventListener('keydown', action);
+    setTimeout(() => document.body.classList.remove(`modal-prioritise-${prioritise}`), 300);
+  };
+  return [setEvent, removeEvent];
+}
+
+
+function trimField(field) {
+  field.value = field.value.trimEnd();
+}
+
+function stopPropagation(ev) {
+  ev.stopPropagation();
+}
+
+export function transformFromHundredProcent(value, max, min, fixed) {
+  return ((value / 100) * (max - min) + min).toFixed(fixed);
+}
+
+export function useCloseOnClickOutside(curElem, action) {
+  const setEvent = () => {
+    document.addEventListener('click', action);
+    curElem.addEventListener('click', stopPropagation);
+  };
+  const removeEvent = () => {
+    document.removeEventListener('click', action);
+    curElem.removeEventListener('click', stopPropagation);
+  };
+  return [setEvent, removeEvent];
+}
+
+export {getRandomPositiveNumber, createRandomIdFromRangeGenerator, getRandomArrayElement, checkStringLength, getCloseListers, trimField, stopPropagation};
